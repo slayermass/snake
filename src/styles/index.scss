@@ -1,0 +1,17 @@
+$cellSize: 50px;
+$cellNumber: 10;
+
+.game {
+  display: flex;
+  width: $cellSize * $cellNumber;
+
+  .row {
+  }
+
+  .cell {
+    width: $cellSize;
+    height: $cellSize;
+    box-sizing: border-box;
+    border: 1px solid black; // todo
+  }
+}
