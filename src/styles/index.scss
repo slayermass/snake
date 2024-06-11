@@ -2,16 +2,18 @@ $cellSize: 50px;
 $cellNumber: 10;
 
 .game {
-  display: flex;
+  display: grid;
   width: $cellSize * $cellNumber;
-
-  .row {
-  }
+  grid-template-columns: repeat($cellNumber, 1fr);
 
   .cell {
     width: $cellSize;
     height: $cellSize;
     box-sizing: border-box;
     border: 1px solid black; // todo
+
+    &.active {
+      background-color: #8e92d1;
+    }
   }
 }

@@ -1,11 +1,16 @@
 {
   "devDependencies": {
     "@types/node": "20.11.5",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^7.1.2",
-    "eslint": "^8.53.0",
-    "gts": "^5.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "html-webpack-plugin": "^5.6.0",
+    "prettier": "^3.3.2",
     "sass": "^1.77.4",
     "sass-loader": "^14.2.1",
     "style-loader": "^4.0.0",
@@ -16,14 +21,8 @@
     "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
-    "lint": "gts lint",
-    "clean": "gts clean",
     "compile": "tsc",
-    "fix": "gts fix",
     "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
-    "prepare": "npm.cmd run compile",
-    "pretest": "npm.cmd run compile",
-    "posttest": "npm.cmd run lint"
+    "build": "webpack --config webpack.prod.js"
   }
 }
