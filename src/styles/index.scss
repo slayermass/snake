@@ -1,9 +1,9 @@
 $cellSize: 50px;
-$cellNumber: 10;
+$cellNumber: var(--fieldNumber);
 
 .game {
   display: grid;
-  width: $cellSize * $cellNumber;
+  width: calc($cellSize * $cellNumber);
   grid-template-columns: repeat($cellNumber, 1fr);
 
   .cell {
@@ -14,6 +14,10 @@ $cellNumber: 10;
 
     &.active {
       background-color: #8e92d1;
+    }
+
+    &.snake {
+      background-color: red;
     }
   }
 }
