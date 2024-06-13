@@ -17,6 +17,10 @@ $cellNumber: var(--fieldNumber);
     }
 
     &.snake {
+      background-color: #cc6868;
+    }
+
+    &.snakeHead {
       background-color: red;
     }
   }

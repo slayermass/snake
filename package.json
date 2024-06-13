@@ -23,6 +23,8 @@
   "scripts": {
     "compile": "tsc",
     "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "lint": "eslint . --ext ts,tsx --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix"
   }
 }
