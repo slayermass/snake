@@ -12,9 +12,11 @@ const enum BlockType {
 
 const filledBlocks: number[][] = []; // 0 - empty, 1 - active, 2 - snake
 
-const snake: number[][] = [];
+const snake: [number, number][] = [];
 
-const snakeMovingDirection: typeof snakeStartPosition = snakeStartPosition;
+let snakeMovingDirection: typeof snakeStartPosition = snakeStartPosition;
+
+let snakePreviousMovingDirection: typeof snakeStartPosition = snakeStartPosition;
 
 let interval: number;
 
@@ -83,11 +85,19 @@ const markBlock = (position: [number, number], type: BlockType) => {
   render();
 };
 
-const syncSnakeWithGameField = () => {
-  console.log('syncSnakeWithGameField', filledBlocks, snake);
+const endOfGame = () => {
+  clearInterval(interval);
 
+  console.log('end of the game');
+};
+
+const syncSnakeWithGameField = (fieldsToClear?: [number, number]) => {
   for (let i = 0; i < snake.length; i += 1) {
     filledBlocks[snake[i][0]][snake[i][1]] = i === 0 ? BlockType.snakeHead : BlockType.snake;
+  }
+
+  if (fieldsToClear) {
+    filledBlocks[fieldsToClear[0]][fieldsToClear[1]] = BlockType.empty;
   }
 };
 
@@ -126,42 +136,47 @@ const generateSnake = () => {
   render();
 };
 
-const moveSnake = (position: 'left' | 'right' | 'top' | 'bottom') => {
-  console.log('moveSnake', position, JSON.parse(JSON.stringify(filledBlocks)), snake);
+const moveSnake = () => {
+  const currentHead = snake[0];
 
-  // const temp = [];
-  //
-  // for (let x = 0; x < fieldSize; x += 1) {
-  //   for (let y = 0; y < fieldSize; y += 1) {
-  //     if (filledBlocks[x][y] === BlockType.snakeHead) {
-  //       temp.unshift([x, y]);
-  //     } else if (filledBlocks[x][y] === BlockType.snake) {
-  //       // temp.push([x, y]);
-  //     }
-  //   }
-  // }
+  /** detect going to the borderline */
+  if (
+    (snakeMovingDirection === 'horizontalTop' && currentHead[0] === 0) ||
+    (snakeMovingDirection === 'horizontalBottom' && currentHead[0] === fieldSize - 1) ||
+    (snakeMovingDirection === 'verticalRight' && currentHead[1] === fieldSize - 1) ||
+    (snakeMovingDirection === 'verticalLeft' && currentHead[1] === 0)
+  ) {
+    endOfGame();
 
-  // TODO check if head can move
+    return;
+  }
 
-  // move head (top)
-  // if (filledBlocks[tempHead[0] - 1] !== undefined && filledBlocks[tempHead[0] - 1][tempHead[1]] !== undefined) {
-  //   filledBlocks[tempHead[0] - 1][tempHead[1]] = BlockType.snakeHead;
-  //   filledBlocks[tempHead[0]][tempHead[1]] = BlockType.snake;
-  // } else {
-  //   console.error('moved out of the game field');
+  // TODO not to allow change direction in one line
+  //  - horizontal left to right
+  //  - vertical right to left
+  // doesn't work
+  // if (
+  //   (snakePreviousMovingDirection === 'horizontalTop' && snakeMovingDirection === 'horizontalBottom') ||
+  //   (snakePreviousMovingDirection === 'verticalLeft' && snakeMovingDirection === 'verticalRight')
+  // ) {
   //   return;
   // }
 
-  // const tail = tempBody.pop();
-  // filledBlocks[tail[0]][tail[1]] = BlockType.empty;
+  snake.unshift([currentHead[0] - getAddition('x', 1), currentHead[1] - getAddition('y', 1)]);
 
-  // render();
+  const lastElementToClear: [number, number] = snake.pop();
+
+  snakePreviousMovingDirection = snakeMovingDirection;
+
+  syncSnakeWithGameField(lastElementToClear);
+
+  render();
 };
 
 const addBlockToSnake = () => {
   const currentTail = snake.at(-1);
 
-  const newTail = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
+  const newTail: [number, number] = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
 
   snake.push(newTail);
 
@@ -183,11 +198,35 @@ const createNewBlockInRandomPlace = () => {
   }
 
   if (freeBlocks.length === 0) {
-    clearInterval(interval);
-    console.error('end of the game');
+    endOfGame();
   } else {
     markBlock(freeBlocks[getRandomNumber(1, freeBlocks.length) - 1], BlockType.active);
   }
+};
+
+const subscribeOnArrows = () => {
+  window.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowUp':
+        snakeMovingDirection = 'horizontalTop';
+        moveSnake();
+        break;
+      case 'ArrowDown':
+        snakeMovingDirection = 'horizontalBottom';
+        moveSnake();
+        break;
+      case 'ArrowLeft':
+        snakeMovingDirection = 'verticalLeft';
+        moveSnake();
+        break;
+      case 'ArrowRight':
+        snakeMovingDirection = 'verticalRight';
+        moveSnake();
+        break;
+      default:
+        break;
+    }
+  });
 };
 
 window.addEventListener('load', () => {
@@ -195,14 +234,10 @@ window.addEventListener('load', () => {
 
   generateSnake();
 
+  subscribeOnArrows();
+
   // @ts-ignore
   window.addBlockToSnake = () => addBlockToSnake();
-
-  // @ts-ignore
-  window.moveTop = () => moveSnake('top');
-
-  // @ts-ignore
-  window.moveTop = () => moveSnake('right');
 
   // interval = window.setInterval(() => {
   //   createNewBlockInRandomPlace();
