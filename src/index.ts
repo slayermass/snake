@@ -16,11 +16,15 @@ const snake: [number, number][] = [];
 
 let snakeMovingDirection: typeof snakeStartPosition = snakeStartPosition;
 
-let snakePreviousMovingDirection: typeof snakeStartPosition = snakeStartPosition;
-
 let interval: number;
 
 const generateGameField = () => {
+  const root = document.querySelector('#root');
+
+  if (!root) {
+    return;
+  }
+
   const div = document.createElement('div');
 
   div.className = 'game';
@@ -39,9 +43,18 @@ const generateGameField = () => {
   }
   div.innerHTML = children;
 
-  document.querySelector('#root')?.appendChild(div);
+  root.appendChild(div);
 
   document.documentElement.style.setProperty('--fieldNumber', fieldSize.toString());
+
+  /** add arrow for smartphones todo? */
+  // const arrowsDiv = document.createElement('div');
+  //
+  // arrowsDiv.className = 'arrows';
+  // arrowsDiv.innerHTML =
+  //   '<div></div><div class="top">Top</div><div></div><div class="left">Left</div><div class="bottom">Bottom</div><div class="right">Right</div>';
+  //
+  // root.appendChild(arrowsDiv);
 };
 
 const render = () => {
@@ -136,10 +149,22 @@ const generateSnake = () => {
   render();
 };
 
+const addBlockToSnake = () => {
+  const currentTail = snake.at(-1);
+
+  const newTail: [number, number] = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
+
+  snake.push(newTail);
+
+  syncSnakeWithGameField();
+
+  render();
+};
+
 const moveSnake = () => {
   const currentHead = snake[0];
 
-  /** detect going to the borderline */
+  /** detect crossing the borderline */
   if (
     (snakeMovingDirection === 'horizontalTop' && currentHead[0] === 0) ||
     (snakeMovingDirection === 'horizontalBottom' && currentHead[0] === fieldSize - 1) ||
@@ -151,38 +176,25 @@ const moveSnake = () => {
     return;
   }
 
-  // TODO not to allow change direction in one line
-  //  - horizontal left to right
-  //  - vertical right to left
-  // doesn't work
-  // if (
-  //   (snakePreviousMovingDirection === 'horizontalTop' && snakeMovingDirection === 'horizontalBottom') ||
-  //   (snakePreviousMovingDirection === 'verticalLeft' && snakeMovingDirection === 'verticalRight')
-  // ) {
-  //   return;
-  // }
+  const newHead: [number, number] = [currentHead[0] - getAddition('x', 1), currentHead[1] - getAddition('y', 1)];
 
-  snake.unshift([currentHead[0] - getAddition('x', 1), currentHead[1] - getAddition('y', 1)]);
+  /** check if snake's head doesn't replace its body */
+  let goNext = true;
 
-  const lastElementToClear: [number, number] = snake.pop();
+  for (let i = 0; i < snake.length; i += 1) {
+    if (snake[i][0] === newHead[0] && snake[i][1] === newHead[1]) {
+      goNext = false;
+      break;
+    }
+  }
 
-  snakePreviousMovingDirection = snakeMovingDirection;
+  if (goNext) {
+    snake.unshift(newHead);
 
-  syncSnakeWithGameField(lastElementToClear);
+    syncSnakeWithGameField(snake.pop());
 
-  render();
-};
-
-const addBlockToSnake = () => {
-  const currentTail = snake.at(-1);
-
-  const newTail: [number, number] = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
-
-  snake.push(newTail);
-
-  syncSnakeWithGameField();
-
-  render();
+    render();
+  }
 };
 
 const createNewBlockInRandomPlace = () => {
@@ -236,10 +248,7 @@ window.addEventListener('load', () => {
 
   subscribeOnArrows();
 
-  // @ts-ignore
-  window.addBlockToSnake = () => addBlockToSnake();
-
   // interval = window.setInterval(() => {
-  //   createNewBlockInRandomPlace();
+  createNewBlockInRandomPlace();
   // }, 1000);
 });

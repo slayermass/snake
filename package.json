@@ -28,6 +28,10 @@
     "build": "webpack --config webpack.prod.js",
     "lint": "eslint . --ext ts,tsx --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "prettier": "prettier --write \"src\""
+  },
+  "engines": {
+    "node": ">=20.x"
   }
 }

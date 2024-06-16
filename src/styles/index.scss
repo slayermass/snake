@@ -1,27 +1,76 @@
-$cellSize: 50px;
+$bodyMargin: 10px;
 $cellNumber: var(--fieldNumber);
+$cellSize: 50px;
+//$cellSize: calc((100vw - 2 * $bodyMargin) / $cellNumber);
+
+@mixin fieldBaseBlock($color) {
+  background-color: $color;
+  border-radius: 50%;
+  display: flex;
+  content: '';
+  width: $cellSize;
+  height: $cellSize;
+}
+
+@mixin fieldSnakeHeadBlock($color) {
+  @include fieldBaseBlock($color);
+  justify-content: center;
+  align-items: center;
+  content: 'head';
+}
+
+body {
+  margin: $bodyMargin;
+}
 
 .game {
+  width: calc(($cellSize * $cellNumber) + 1px * $cellNumber - 1px);
   display: grid;
-  width: calc($cellSize * $cellNumber);
   grid-template-columns: repeat($cellNumber, 1fr);
+  border: 1px solid black;
+  grid-gap: 1px;
+  background-color: black;
 
   .cell {
+    background-color: white;
     width: $cellSize;
     height: $cellSize;
-    box-sizing: border-box;
-    border: 1px solid black; // todo
 
     &.active {
-      background-color: #8e92d1;
+      &:before {
+        @include fieldBaseBlock(#cc3333);
+      }
     }
 
     &.snake {
-      background-color: #cc6868;
+      &:before {
+        @include fieldBaseBlock(#00cc00);
+      }
     }
 
     &.snakeHead {
-      background-color: red;
+      &:before {
+        @include fieldSnakeHeadBlock(#009900);
+      }
     }
+  }
+}
+
+.arrows {
+  display: grid;
+  width: calc($cellSize * $cellNumber);
+  height: 10vh;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 15px;
+
+  .left,
+  .right,
+  .top,
+  .bottom {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border: 1px solid red;
+    border-collapse: collapse;
   }
 }
