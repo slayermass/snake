@@ -1,11 +1,7 @@
 import { getAddition } from '../utils';
 import { fieldSize, snakeStartLength, snakeStartPosition } from '../config';
-import { gameField, snake } from '../utils/store';
-import { BlockType } from '../utils/types';
-
-export const endOfGame = () => {
-  console.log('end of the game');
-};
+import { getGameField, setGameField, getSnake, setSnake } from '../utils/store';
+import { BlockType, GameFieldType } from '../utils/types';
 
 export const render = () => {
   const field = document.querySelector('.game');
@@ -27,7 +23,7 @@ export const render = () => {
     elem.remove(...allClasses);
 
     // eslint-disable-next-line default-case
-    switch (gameField[coords.x][coords.y]) {
+    switch (getGameField()[coords.x][coords.y]) {
       case BlockType.food:
         elem.add('food');
         break;
@@ -42,8 +38,10 @@ export const render = () => {
 };
 
 export const syncSnakeWithGameField = (fieldsToClear?: [number, number]) => {
-  for (let i = 0; i < snake.length; i += 1) {
-    gameField[snake[i][0]][snake[i][1]] = i === 0 ? BlockType.snakeHead : BlockType.snake;
+  const gameField = getGameField();
+
+  for (let i = 0; i < getSnake().length; i += 1) {
+    gameField[getSnake()[i][0]][getSnake()[i][1]] = i === 0 ? BlockType.snakeHead : BlockType.snake;
   }
 
   if (fieldsToClear) {
@@ -51,7 +49,23 @@ export const syncSnakeWithGameField = (fieldsToClear?: [number, number]) => {
   }
 };
 
-export const generateGameField = () => {
+export const regenerateGameField = () => {
+  const temp: GameFieldType = [];
+
+  for (let x = 0; x < fieldSize; x += 1) {
+    const tempToFillBlocks = [];
+
+    for (let y = 0; y < fieldSize; y += 1) {
+      tempToFillBlocks.push(0);
+    }
+
+    temp.push(tempToFillBlocks);
+  }
+
+  setGameField(temp);
+};
+
+export const createGameField = () => {
   const root = document.querySelector('#root');
 
   if (!root) {
@@ -62,18 +76,16 @@ export const generateGameField = () => {
 
   div.className = 'game';
 
+  regenerateGameField();
+
   let children = '';
 
   for (let x = 0; x < fieldSize; x += 1) {
-    const tempToFillBlocks = [];
-
     for (let y = 0; y < fieldSize; y += 1) {
       children += '<div class="cell"></div>';
-      tempToFillBlocks.push(0);
     }
-
-    gameField.push(tempToFillBlocks);
   }
+
   div.innerHTML = children;
 
   root.appendChild(div);
@@ -94,7 +106,7 @@ export const generateSnake = () => {
   const approximateCenter = Math.floor((fieldSize - 1) / 2);
 
   for (let i = -1; i < snakeStartLength - 1; i += 1) {
-    snake.push([
+    getSnake().push([
       approximateCenter + getAddition('x', i, snakeStartPosition),
       approximateCenter + getAddition('y', i, snakeStartPosition),
     ]);
@@ -103,4 +115,10 @@ export const generateSnake = () => {
   syncSnakeWithGameField();
 
   render();
+};
+
+export const regenerateSnake = () => {
+  setSnake([]);
+
+  generateSnake();
 };
