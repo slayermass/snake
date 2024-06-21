@@ -1,4 +1,4 @@
-import { getSnakeMovingDirection } from './store';
+import store from './store';
 import { SnakeMovingDirection } from './types';
 
 export const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -9,7 +9,7 @@ export const getRandomNumber = (min: number, max: number) => Math.floor(Math.ran
 export const getAddition = (
   pos: 'x' | 'y',
   number: number,
-  direction: SnakeMovingDirection = getSnakeMovingDirection(),
+  direction: SnakeMovingDirection = store.snakeMovingDirection,
 ) => {
   if (pos === 'x' && direction === 'horizontalTop') {
     return number;

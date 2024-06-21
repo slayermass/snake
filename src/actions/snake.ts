@@ -1,20 +1,18 @@
 import { endOfGame, winOfGame } from './game';
 import { clearGameFieldBlock, markBlock, render, syncSnakeWithGameField } from './DOM';
 import { getAddition, getRandomNumber } from '../utils';
-import { getGameField, getSnakeMovingDirection, getSnake, setSnake } from '../utils/store';
+import store from '../utils/store';
 import { fieldSize } from '../config';
 import { BlockType, SnakeType } from '../utils/types';
 
 const addBlockToSnake = () => {
-  const snake = getSnake();
+  const { snake } = store;
 
   const currentTail = snake.at(-1);
 
   const newTail: [number, number] = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
 
   snake.push(newTail);
-
-  setSnake(snake);
 };
 
 /** has to be called after generating a snake */
@@ -24,7 +22,7 @@ export const createNewBlockInRandomPlace = () => {
 
   for (let x = 0; x < fieldSize; x += 1) {
     for (let y = 0; y < fieldSize; y += 1) {
-      if (getGameField()[x][y] === BlockType.empty) {
+      if (store.gameField[x][y] === BlockType.empty) {
         freeBlocks.push([x, y]);
       }
     }
@@ -43,12 +41,12 @@ export const createNewBlockInRandomPlace = () => {
 
 /** snake can't move back */
 export const isMovingBack = (newHead: SnakeType[0]): boolean =>
-  !(getSnake()[1][0] === newHead[0] && getSnake()[1][1] === newHead[1]);
+  !(store.snake[1][0] === newHead[0] && store.snake[1][1] === newHead[1]);
 
 /** check if snake's head doesn't replace its body */
 export const isMovingToItself = (newHead: SnakeType[0]): boolean => {
-  for (let i = 0; i < getSnake().length; i += 1) {
-    if (getSnake()[i][0] === newHead[0] && getSnake()[i][1] === newHead[1]) {
+  for (let i = 0; i < store.snake.length; i += 1) {
+    if (store.snake[i][0] === newHead[0] && store.snake[i][1] === newHead[1]) {
       return false;
     }
   }
@@ -58,7 +56,7 @@ export const isMovingToItself = (newHead: SnakeType[0]): boolean => {
 
 /** detect crossing the borderline */
 export const isMovingToBorderLine = (head: SnakeType[0]): boolean => {
-  const snakeMovingDirection = getSnakeMovingDirection();
+  const { snakeMovingDirection } = store;
 
   return !(
     (snakeMovingDirection === 'horizontalTop' && head[0] === 0) ||
@@ -69,8 +67,7 @@ export const isMovingToBorderLine = (head: SnakeType[0]): boolean => {
 };
 
 export const ifAteFood = (newHead: SnakeType[0]) => {
-  if (getGameField()[newHead[0]][newHead[1]] === BlockType.food) {
-    console.log('ate food');
+  if (store.gameField[newHead[0]][newHead[1]] === BlockType.food) {
     addBlockToSnake();
 
     markBlock(newHead, BlockType.empty);
@@ -80,7 +77,7 @@ export const ifAteFood = (newHead: SnakeType[0]) => {
 };
 
 export const isEmptyBlock = () => {
-  const gameField = getGameField();
+  const { gameField } = store;
 
   for (let x = 0; x < gameField.length; x += 1) {
     for (let y = 0; y < fieldSize; y += 1) {
@@ -94,7 +91,7 @@ export const isEmptyBlock = () => {
 };
 
 export const moveSnake = () => {
-  const currentHead = getSnake()[0];
+  const currentHead = store.snake[0];
 
   const newHead: [number, number] = [currentHead[0] - getAddition('x', 1), currentHead[1] - getAddition('y', 1)];
 
@@ -116,9 +113,9 @@ export const moveSnake = () => {
 
   ifAteFood(newHead);
 
-  getSnake().unshift(newHead);
+  store.snake.unshift(newHead);
 
-  clearGameFieldBlock(getSnake().pop());
+  clearGameFieldBlock(store.snake.pop());
 
   syncSnakeWithGameField();
 

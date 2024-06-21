@@ -1,45 +1,55 @@
-import { stringify } from 'node:querystring';
 import { snakeStartPosition } from '../config';
 import { GameFieldType, SnakeMovingDirection, SnakeType } from './types';
 
-const clone = (value: any) => JSON.parse(JSON.stringify(value));
+// const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
-/** snake */
-let snake: SnakeType = [];
+const store: {
+  snakeMovingDirection: SnakeMovingDirection;
+  isDebugEnabled: boolean;
+  gameField: GameFieldType;
+  snake: SnakeType;
+} = {
+  get snakeMovingDirection() {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._snakeMovingDirection;
+  },
+  set snakeMovingDirection(value: SnakeMovingDirection) {
+    // eslint-disable-next-line no-underscore-dangle
+    this._snakeMovingDirection = value;
+  },
 
-export const getSnake = () => snake;
+  get isDebugEnabled() {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._isDebugEnabled;
+  },
+  set isDebugEnabled(value: boolean) {
+    // eslint-disable-next-line no-underscore-dangle
+    this._isDebugEnabled = value;
+  },
 
-export const setSnake = (newSnake: SnakeType) => {
-  snake = clone(newSnake);
+  get gameField() {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._gameField;
+  },
+  set gameField(value: GameFieldType) {
+    // eslint-disable-next-line no-underscore-dangle
+    this._gameField = value;
+  },
+
+  get snake() {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._snake;
+  },
+  set snake(value: SnakeType) {
+    // eslint-disable-next-line no-underscore-dangle
+    this._snake = value;
+  },
 };
-/** end snake */
 
-/** gameField */
-let gameField: GameFieldType = [];
+/** initial store values */
+store.snakeMovingDirection = snakeStartPosition;
+store.isDebugEnabled = false;
+store.gameField = [];
+store.snake = [];
 
-export const getGameField = (): ReadonlyArray<GameFieldType[0]> => gameField;
-
-export const setGameField = (newGameField: GameFieldType) => {
-  gameField = clone(newGameField);
-};
-/** end gameField */
-
-/** snakeMovingDirection */
-let snakeMovingDirection: SnakeMovingDirection = snakeStartPosition;
-
-export const setSnakeMovingDirection = (direction: SnakeMovingDirection): void => {
-  snakeMovingDirection = direction;
-};
-
-export const getSnakeMovingDirection = (): SnakeMovingDirection => snakeMovingDirection;
-/** end snakeMovingDirection */
-
-/** debug */
-let isDebugEnabled = false;
-
-export const setIsDebugEnabled = (value: boolean) => {
-  isDebugEnabled = value;
-};
-
-export const getIsDebugEnabled = () => isDebugEnabled;
-/** end debug */
+export default store;

@@ -1,12 +1,12 @@
 import { getAddition } from '../utils';
 import { fieldSize, snakeStartLength, snakeStartPosition } from '../config';
-import { getGameField, setGameField, getSnake, setSnake, getIsDebugEnabled } from '../utils/store';
+import store from '../utils/store';
 import { BlockType, GameFieldType } from '../utils/types';
 
 const debugGameField = () => {
   let str = '';
 
-  const gameField = getGameField();
+  const { gameField } = store;
 
   for (let x = 0; x < gameField.length; x += 1) {
     str += `${gameField[x].join(' ')}\n`;
@@ -15,20 +15,20 @@ const debugGameField = () => {
   // eslint-disable-next-line no-console
   console.info(`gameField: \n${str}`);
   // eslint-disable-next-line no-console
-  console.info(`current snake's length: ${getSnake().length}`);
+  console.info(`current snake's length: ${store.snake.length}`);
 };
 
 // mark a block
 export const markBlock = (position: [number, number], type: BlockType) => {
-  const gameField: GameFieldType = getGameField() as GameFieldType;
+  const { gameField } = store;
 
   gameField[position[0]][position[1]] = type;
 
-  setGameField(gameField);
+  store.gameField = gameField;
 };
 
 export const render = () => {
-  if (getIsDebugEnabled()) {
+  if (store.isDebugEnabled) {
     debugGameField();
   }
 
@@ -51,7 +51,7 @@ export const render = () => {
     elem.remove(...allCssClasses);
 
     // eslint-disable-next-line default-case
-    switch (getGameField()[coords.x][coords.y]) {
+    switch (store.gameField[coords.x][coords.y]) {
       case BlockType.food:
         elem.add('food');
         break;
@@ -70,8 +70,10 @@ export const clearGameFieldBlock = (block: [number, number]) => {
 };
 
 export const syncSnakeWithGameField = () => {
-  for (let i = 0; i < getSnake().length; i += 1) {
-    markBlock([getSnake()[i][0], getSnake()[i][1]], i === 0 ? BlockType.snakeHead : BlockType.snake);
+  const { snake } = store;
+
+  for (let i = 0; i < snake.length; i += 1) {
+    markBlock([snake[i][0], snake[i][1]], i === 0 ? BlockType.snakeHead : BlockType.snake);
   }
 };
 
@@ -88,7 +90,7 @@ export const regenerateGameField = () => {
     temp.push(tempToFillBlocks);
   }
 
-  setGameField(temp);
+  store.gameField = temp;
 };
 
 export const createGameField = () => {
@@ -123,7 +125,7 @@ export const generateSnake = () => {
   const approximateCenter = Math.floor((fieldSize - 1) / 2);
 
   for (let i = -1; i < snakeStartLength - 1; i += 1) {
-    getSnake().push([
+    store.snake.push([
       approximateCenter + getAddition('x', i, snakeStartPosition),
       approximateCenter + getAddition('y', i, snakeStartPosition),
     ]);
@@ -135,7 +137,7 @@ export const generateSnake = () => {
 };
 
 export const regenerateSnake = () => {
-  setSnake([]);
+  store.snake = [];
 
   generateSnake();
 };

@@ -1,22 +1,22 @@
 import { moveSnake } from './snake';
-import { setSnakeMovingDirection } from '../utils/store';
+import store from '../utils/store';
 
 const arrowListener = (e: KeyboardEvent) => {
   switch (e.key) {
     case 'ArrowUp':
-      setSnakeMovingDirection('horizontalTop');
+      store.snakeMovingDirection = 'horizontalTop';
       moveSnake();
       break;
     case 'ArrowDown':
-      setSnakeMovingDirection('horizontalBottom');
+      store.snakeMovingDirection = 'horizontalBottom';
       moveSnake();
       break;
     case 'ArrowLeft':
-      setSnakeMovingDirection('verticalLeft');
+      store.snakeMovingDirection = 'verticalLeft';
       moveSnake();
       break;
     case 'ArrowRight':
-      setSnakeMovingDirection('verticalRight');
+      store.snakeMovingDirection = 'verticalRight';
       moveSnake();
       break;
     default:

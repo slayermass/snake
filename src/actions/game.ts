@@ -1,10 +1,10 @@
 import { createNewBlockInRandomPlace } from './snake';
-import { setIsDebugEnabled } from '../utils/store';
+import store from '../utils/store';
 import { createGameField, generateSnake, regenerateGameField, regenerateSnake, render } from './DOM';
 import { subscribeOnArrows, unsubscribeOnArrows } from './subscriptions';
 
 export const startNewGame = (options?: { debug?: boolean }) => {
-  setIsDebugEnabled(options?.debug || false);
+  store.isDebugEnabled = options?.debug || false;
 
   createGameField();
 
