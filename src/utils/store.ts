@@ -1,5 +1,8 @@
+import { stringify } from 'node:querystring';
 import { snakeStartPosition } from '../config';
 import { GameFieldType, SnakeMovingDirection, SnakeType } from './types';
+
+const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 /** snake */
 let snake: SnakeType = [];
@@ -7,17 +10,17 @@ let snake: SnakeType = [];
 export const getSnake = () => snake;
 
 export const setSnake = (newSnake: SnakeType) => {
-  snake = newSnake;
+  snake = clone(newSnake);
 };
 /** end snake */
 
 /** gameField */
 let gameField: GameFieldType = [];
 
-export const getGameField = (): ReadonlyArray<GameFieldType[0]> => JSON.parse(JSON.stringify(gameField));
+export const getGameField = (): ReadonlyArray<GameFieldType[0]> => gameField;
 
 export const setGameField = (newGameField: GameFieldType) => {
-  gameField = JSON.parse(JSON.stringify(newGameField));
+  gameField = clone(newGameField);
 };
 /** end gameField */
 

@@ -1,16 +1,20 @@
 import { endOfGame, winOfGame } from './game';
-import { markBlock, render, syncSnakeWithGameField } from './DOM';
+import { clearGameFieldBlock, markBlock, render, syncSnakeWithGameField } from './DOM';
 import { getAddition, getRandomNumber } from '../utils';
-import { getGameField, getSnakeMovingDirection, getSnake } from '../utils/store';
+import { getGameField, getSnakeMovingDirection, getSnake, setSnake } from '../utils/store';
 import { fieldSize } from '../config';
 import { BlockType, SnakeType } from '../utils/types';
 
 const addBlockToSnake = () => {
-  const currentTail = getSnake().at(-1);
+  const snake = getSnake();
+
+  const currentTail = snake.at(-1);
 
   const newTail: [number, number] = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
 
-  getSnake().push(newTail);
+  snake.push(newTail);
+
+  setSnake(snake);
 };
 
 /** has to be called after generating a snake */
@@ -66,6 +70,7 @@ export const isMovingToBorderLine = (head: SnakeType[0]): boolean => {
 
 export const ifAteFood = (newHead: SnakeType[0]) => {
   if (getGameField()[newHead[0]][newHead[1]] === BlockType.food) {
+    console.log('ate food');
     addBlockToSnake();
 
     markBlock(newHead, BlockType.empty);
@@ -113,7 +118,9 @@ export const moveSnake = () => {
 
   getSnake().unshift(newHead);
 
-  syncSnakeWithGameField(getSnake().pop());
+  clearGameFieldBlock(getSnake().pop());
+
+  syncSnakeWithGameField();
 
   render();
 };

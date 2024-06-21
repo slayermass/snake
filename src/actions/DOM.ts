@@ -65,13 +65,13 @@ export const render = () => {
   }
 };
 
-export const syncSnakeWithGameField = (fieldsToClear?: [number, number]) => {
+export const clearGameFieldBlock = (block: [number, number]) => {
+  markBlock(block, BlockType.empty);
+};
+
+export const syncSnakeWithGameField = () => {
   for (let i = 0; i < getSnake().length; i += 1) {
     markBlock([getSnake()[i][0], getSnake()[i][1]], i === 0 ? BlockType.snakeHead : BlockType.snake);
-  }
-
-  if (fieldsToClear) {
-    markBlock(fieldsToClear, BlockType.empty);
   }
 };
 
