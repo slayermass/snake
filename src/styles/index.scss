@@ -55,22 +55,3 @@ body {
     }
   }
 }
-
-.arrows {
-  display: grid;
-  width: calc($cellSize * $cellNumber);
-  height: 10vh;
-  grid-template-columns: 1fr 1fr 1fr;
-  margin-top: 15px;
-
-  .left,
-  .right,
-  .top,
-  .bottom {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    border: 1px solid red;
-    border-collapse: collapse;
-  }
-}

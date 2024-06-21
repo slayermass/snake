@@ -14,10 +14,10 @@ export const setSnake = (newSnake: SnakeType) => {
 /** gameField */
 let gameField: GameFieldType = [];
 
-export const getGameField = () => gameField;
+export const getGameField = (): ReadonlyArray<GameFieldType[0]> => JSON.parse(JSON.stringify(gameField));
 
 export const setGameField = (newGameField: GameFieldType) => {
-  gameField = newGameField;
+  gameField = JSON.parse(JSON.stringify(newGameField));
 };
 /** end gameField */
 
@@ -29,3 +29,14 @@ export const setSnakeMovingDirection = (direction: SnakeMovingDirection): void =
 };
 
 export const getSnakeMovingDirection = (): SnakeMovingDirection => snakeMovingDirection;
+/** end snakeMovingDirection */
+
+/** debug */
+let isDebugEnabled = false;
+
+export const setIsDebugEnabled = (value: boolean) => {
+  isDebugEnabled = value;
+};
+
+export const getIsDebugEnabled = () => isDebugEnabled;
+/** end debug */

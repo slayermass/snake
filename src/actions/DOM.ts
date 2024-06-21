@@ -1,14 +1,42 @@
 import { getAddition } from '../utils';
 import { fieldSize, snakeStartLength, snakeStartPosition } from '../config';
-import { getGameField, setGameField, getSnake, setSnake } from '../utils/store';
+import { getGameField, setGameField, getSnake, setSnake, getIsDebugEnabled } from '../utils/store';
 import { BlockType, GameFieldType } from '../utils/types';
 
+const debugGameField = () => {
+  let str = '';
+
+  const gameField = getGameField();
+
+  for (let x = 0; x < gameField.length; x += 1) {
+    str += `${gameField[x].join(' ')}\n`;
+  }
+
+  // eslint-disable-next-line no-console
+  console.info(`gameField: \n${str}`);
+  // eslint-disable-next-line no-console
+  console.info(`current snake's length: ${getSnake().length}`);
+};
+
+// mark a block
+export const markBlock = (position: [number, number], type: BlockType) => {
+  const gameField: GameFieldType = getGameField() as GameFieldType;
+
+  gameField[position[0]][position[1]] = type;
+
+  setGameField(gameField);
+};
+
 export const render = () => {
+  if (getIsDebugEnabled()) {
+    debugGameField();
+  }
+
   const field = document.querySelector('.game');
 
   const coords = { x: 0, y: -1 };
 
-  const allClasses = ['food', 'snake', 'snakeHead'] as const;
+  const allCssClasses = ['food', 'snake', 'snakeHead'] as const;
 
   for (let x = 0; x < field.children.length; x += 1) {
     coords.y += 1;
@@ -20,7 +48,7 @@ export const render = () => {
 
     const elem = field.children[x].classList;
 
-    elem.remove(...allClasses);
+    elem.remove(...allCssClasses);
 
     // eslint-disable-next-line default-case
     switch (getGameField()[coords.x][coords.y]) {
@@ -38,14 +66,12 @@ export const render = () => {
 };
 
 export const syncSnakeWithGameField = (fieldsToClear?: [number, number]) => {
-  const gameField = getGameField();
-
   for (let i = 0; i < getSnake().length; i += 1) {
-    gameField[getSnake()[i][0]][getSnake()[i][1]] = i === 0 ? BlockType.snakeHead : BlockType.snake;
+    markBlock([getSnake()[i][0], getSnake()[i][1]], i === 0 ? BlockType.snakeHead : BlockType.snake);
   }
 
   if (fieldsToClear) {
-    gameField[fieldsToClear[0]][fieldsToClear[1]] = BlockType.empty;
+    markBlock(fieldsToClear, BlockType.empty);
   }
 };
 
@@ -91,15 +117,6 @@ export const createGameField = () => {
   root.appendChild(div);
 
   document.documentElement.style.setProperty('--fieldNumber', fieldSize.toString());
-
-  /** add arrow for smartphones todo? */
-  // const arrowsDiv = document.createElement('div');
-  //
-  // arrowsDiv.className = 'arrows';
-  // arrowsDiv.innerHTML =
-  //   '<div></div><div class="top">Top</div><div></div><div class="left">Left</div><div class="bottom">Bottom</div><div class="right">Right</div>';
-  //
-  // root.appendChild(arrowsDiv);
 };
 
 export const generateSnake = () => {

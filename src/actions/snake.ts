@@ -1,5 +1,5 @@
 import { endOfGame, winOfGame } from './game';
-import { render, syncSnakeWithGameField } from './DOM';
+import { markBlock, render, syncSnakeWithGameField } from './DOM';
 import { getAddition, getRandomNumber } from '../utils';
 import { getGameField, getSnakeMovingDirection, getSnake } from '../utils/store';
 import { fieldSize } from '../config';
@@ -13,13 +13,7 @@ const addBlockToSnake = () => {
   getSnake().push(newTail);
 };
 
-// mark a block and rerender
-const markBlock = (position: [number, number], type: BlockType) => {
-  getGameField()[position[0]][position[1]] = type;
-
-  render();
-};
-
+/** has to be called after generating a snake */
 export const createNewBlockInRandomPlace = () => {
   // find free blocks
   const freeBlocks = [];
@@ -35,7 +29,11 @@ export const createNewBlockInRandomPlace = () => {
   if (freeBlocks.length === 0) {
     endOfGame();
   } else {
-    markBlock(freeBlocks[getRandomNumber(1, freeBlocks.length) - 1], BlockType.food);
+    const randomIndex = getRandomNumber(1, freeBlocks.length) - 1;
+
+    markBlock(freeBlocks[randomIndex], BlockType.food);
+
+    render();
   }
 };
 
@@ -70,7 +68,7 @@ export const ifAteFood = (newHead: SnakeType[0]) => {
   if (getGameField()[newHead[0]][newHead[1]] === BlockType.food) {
     addBlockToSnake();
 
-    getGameField()[newHead[0]][newHead[1]] = BlockType.empty;
+    markBlock(newHead, BlockType.empty);
 
     createNewBlockInRandomPlace();
   }
