@@ -36,8 +36,6 @@ export const render = () => {
 
   const coords = { x: 0, y: -1 };
 
-  const allCssClasses = ['food', 'snake', 'snakeHead'] as const;
-
   for (let x = 0; x < field.children.length; x += 1) {
     coords.y += 1;
 
@@ -46,21 +44,22 @@ export const render = () => {
       coords.y = 0;
     }
 
-    const elem = field.children[x].classList;
+    const elem = field.children[x];
 
-    elem.remove(...allCssClasses);
+    const attributeName = 'data-class';
 
-    // eslint-disable-next-line default-case
     switch (store.gameField[coords.x][coords.y]) {
       case BlockType.food:
-        elem.add('food');
+        elem.setAttribute(attributeName, 'food');
         break;
       case BlockType.snake:
-        elem.add('snake');
+        elem.setAttribute(attributeName, 'snake');
         break;
       case BlockType.snakeHead:
-        elem.add('snakeHead');
+        elem.setAttribute(attributeName, 'snakeHead');
         break;
+      default:
+        elem.removeAttribute(attributeName);
     }
   }
 };

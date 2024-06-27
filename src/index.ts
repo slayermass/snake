@@ -4,6 +4,6 @@ import { startNewGame } from './actions/game';
 
 window.addEventListener('load', () => {
   startNewGame({
-    debug: false,
+    debug: true,
   });
 });

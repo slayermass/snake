@@ -36,19 +36,19 @@ body {
     width: $cellSize;
     height: $cellSize;
 
-    &.food {
+    &[data-class="food"] {
       &:before {
         @include fieldBaseBlock(#cc3333);
       }
     }
 
-    &.snake {
+    &[data-class="snake"] {
       &:before {
         @include fieldBaseBlock(#00cc00);
       }
     }
 
-    &.snakeHead {
+    &[data-class="snakeHead"] {
       &:before {
         @include fieldSnakeHeadBlock(#009900);
       }
