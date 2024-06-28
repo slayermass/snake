@@ -1,13 +1,12 @@
-import { snakeStartPosition } from '../config';
+import { snakeMovingSpeed, snakeStartPosition } from '../config';
 import { GameFieldType, SnakeMovingDirection, SnakeType } from './types';
-
-// const clone = (value: any) => JSON.parse(JSON.stringify(value));
 
 const store: {
   snakeMovingDirection: SnakeMovingDirection;
   isDebugEnabled: boolean;
   gameField: GameFieldType;
   snake: SnakeType;
+  snakeMovingSpeed: number;
 } = {
   get snakeMovingDirection() {
     // eslint-disable-next-line no-underscore-dangle
@@ -44,6 +43,15 @@ const store: {
     // eslint-disable-next-line no-underscore-dangle
     this._snake = value;
   },
+
+  get snakeMovingSpeed() {
+    // eslint-disable-next-line no-underscore-dangle
+    return this._snakeMovingSpeed;
+  },
+  set snakeMovingSpeed(value: number) {
+    // eslint-disable-next-line no-underscore-dangle
+    this._snakeMovingSpeed = +value.toFixed(1);
+  },
 };
 
 /** initial store values */
@@ -51,5 +59,6 @@ store.snakeMovingDirection = snakeStartPosition;
 store.isDebugEnabled = false;
 store.gameField = [];
 store.snake = [];
+store.snakeMovingSpeed = snakeMovingSpeed;
 
 export default store;

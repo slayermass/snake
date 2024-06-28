@@ -2,7 +2,7 @@ import { endOfGame, winOfGame } from './game';
 import { clearGameFieldBlock, markBlock, render, syncSnakeWithGameField } from './DOM';
 import { getAddition, getRandomNumber } from '../utils';
 import store from '../utils/store';
-import { fieldSize } from '../config';
+import { fieldSize, snakeMovingSpeedIncreaseByEatenFood } from '../config';
 import { BlockType, SnakeType } from '../utils/types';
 
 const addBlockToSnake = () => {
@@ -41,7 +41,7 @@ export const createNewBlockInRandomPlace = () => {
 
 /** snake can't move back */
 export const isMovingBack = (newHead: SnakeType[0]): boolean =>
-  !(store.snake[1][0] === newHead[0] && store.snake[1][1] === newHead[1]);
+  store.snake[1][0] === newHead[0] && store.snake[1][1] === newHead[1];
 
 /** check if snake's head doesn't replace its body */
 export const isMovingToItself = (newHead: SnakeType[0]): boolean => {
@@ -73,6 +73,8 @@ export const ifAteFood = (newHead: SnakeType[0]) => {
     markBlock(newHead, BlockType.empty);
 
     createNewBlockInRandomPlace();
+
+    store.snakeMovingSpeed += snakeMovingSpeedIncreaseByEatenFood;
   }
 };
 
@@ -95,7 +97,9 @@ export const moveSnake = () => {
 
   const newHead: [number, number] = [currentHead[0] - getAddition('x', 1), currentHead[1] - getAddition('y', 1)];
 
-  if (!isMovingBack(newHead)) {
+  if (isMovingBack(newHead)) {
+    endOfGame();
+
     return;
   }
 

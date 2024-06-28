@@ -12,10 +12,14 @@ const debugGameField = () => {
     str += `${gameField[x].join(' ')}\n`;
   }
 
+  const info = [
+    `gameField: \n${str}`,
+    `current snake's length: ${store.snake.length}`,
+    `current snake's speed: ${store.snakeMovingSpeed}`,
+  ];
+
   // eslint-disable-next-line no-console
-  console.info(`gameField: \n${str}`);
-  // eslint-disable-next-line no-console
-  console.info(`current snake's length: ${store.snake.length}`);
+  console.info(info.join('\n'));
 };
 
 // mark a block
