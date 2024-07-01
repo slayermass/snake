@@ -3,14 +3,45 @@ import { clearGameFieldBlock, markBlock, render, syncSnakeWithGameField } from '
 import { getAddition, getRandomNumber } from '../utils';
 import store from '../utils/store';
 import { fieldSize, snakeMovingSpeedIncreaseByEatenFood } from '../config';
-import { BlockType, SnakeType } from '../utils/types';
+import { BlockType, SnakeMovingDirection, SnakeType } from '../utils/types';
+
+const getSnakeTailDirection = (): SnakeMovingDirection => {
+  const [prevX, prevY] = store.snake.at(-2);
+
+  const [currentX, currentY] = store.snake.at(-1);
+
+  const [resX, resY] = [prevX - currentX, prevY - currentY];
+
+  if (resX === 1 && resY === 0) {
+    return 'horizontalBottom';
+  }
+  if (resX === -1 && resY === 0) {
+    return 'horizontalTop';
+  }
+
+  if (resX === 0 && resY === 1) {
+    return 'verticalRight';
+  }
+  if (resX === 0 && resY === -1) {
+    return 'verticalLeft';
+  }
+
+  return 'unknown' as SnakeMovingDirection;
+};
 
 const addBlockToSnake = () => {
   const { snake } = store;
 
   const currentTail = snake.at(-1);
 
-  const newTail: [number, number] = [currentTail[0] + getAddition('x', 1), currentTail[1] + getAddition('y', 1)];
+  const tailDirection = getSnakeTailDirection();
+
+  const newTail: [number, number] = [
+    currentTail[0] + getAddition('x', 1, tailDirection),
+    currentTail[1] + getAddition('y', 1, tailDirection),
+  ];
+
+  console.log('addBlockToSnake', newTail);
 
   snake.push(newTail);
 };
@@ -66,16 +97,18 @@ export const isMovingToBorderLine = (head: SnakeType[0]): boolean => {
   );
 };
 
-export const ifAteFood = (newHead: SnakeType[0]) => {
+export const ifAteFood = (newHead: SnakeType[0]): boolean => {
   if (store.gameField[newHead[0]][newHead[1]] === BlockType.food) {
     addBlockToSnake();
 
     markBlock(newHead, BlockType.empty);
 
-    createNewBlockInRandomPlace();
-
     store.snakeInitialMovingSpeed += snakeMovingSpeedIncreaseByEatenFood;
+
+    return true;
   }
+
+  return false;
 };
 
 export const isEmptyBlock = () => {
@@ -115,11 +148,15 @@ export const moveSnake = () => {
     return;
   }
 
-  ifAteFood(newHead);
+  const isAte = ifAteFood(newHead);
 
   store.snake.unshift(newHead);
 
   clearGameFieldBlock(store.snake.pop());
+
+  if (isAte) {
+    createNewBlockInRandomPlace();
+  }
 
   syncSnakeWithGameField();
 

@@ -1,6 +1,7 @@
 import { snakeInitialMovingSpeed, snakeStartPosition } from '../config';
 import { GameFieldType, SnakeMovingDirection, SnakeType } from './types';
 
+// todo create a convenient store
 const store: {
   snakeMovingDirection: SnakeMovingDirection;
   isDebugEnabled: boolean;
