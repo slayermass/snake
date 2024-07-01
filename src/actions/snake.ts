@@ -74,7 +74,7 @@ export const ifAteFood = (newHead: SnakeType[0]) => {
 
     createNewBlockInRandomPlace();
 
-    store.snakeMovingSpeed += snakeMovingSpeedIncreaseByEatenFood;
+    store.snakeInitialMovingSpeed += snakeMovingSpeedIncreaseByEatenFood;
   }
 };
 

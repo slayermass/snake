@@ -10,29 +10,39 @@ export const subscribeMoveSnake = () => {
     window.requestAnimationFrame(moveSnake);
 
     subscribeMoveSnake();
-  }, 1000 / store.snakeMovingSpeed);
+  }, 1000 / store.snakeInitialMovingSpeed);
 };
 
 export const unsubscribeMoveSnake = () => {
   clearTimeout(timer);
+
+  timer = undefined;
 };
 
-const arrowListener = (e: KeyboardEvent) => {
-  switch (e.key) {
+const arrowListener = ({ key }: KeyboardEvent) => {
+  switch (key) {
     case 'ArrowUp':
       store.snakeMovingDirection = 'horizontalTop';
-      if (timer === undefined) {
-        subscribeMoveSnake();
-      }
+
       break;
     case 'ArrowDown':
       store.snakeMovingDirection = 'horizontalBottom';
+
       break;
     case 'ArrowLeft':
       store.snakeMovingDirection = 'verticalLeft';
+
       break;
     case 'ArrowRight':
       store.snakeMovingDirection = 'verticalRight';
+
+      break;
+    case ' ':
+      if (timer === undefined) {
+        subscribeMoveSnake();
+      } else {
+        unsubscribeMoveSnake();
+      }
       break;
     default:
       break;

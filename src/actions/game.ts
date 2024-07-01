@@ -1,3 +1,4 @@
+import { snakeInitialMovingSpeed } from '../config';
 import { createNewBlockInRandomPlace } from './snake';
 import store from '../utils/store';
 import { createGameField, generateSnake, regenerateGameField, regenerateSnake, render } from './DOM';
@@ -16,6 +17,8 @@ export const startNewGame = (options?: { debug?: boolean }) => {
 };
 
 export const restartGame = () => {
+  store.snakeInitialMovingSpeed = snakeInitialMovingSpeed;
+
   unsubscribeOnArrows();
 
   subscribeOnArrows();

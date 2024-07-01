@@ -15,7 +15,7 @@ const debugGameField = () => {
   const info = [
     `gameField: \n${str}`,
     `current snake's length: ${store.snake.length}`,
-    `current snake's speed: ${store.snakeMovingSpeed}`,
+    `current snake's speed: ${store.snakeInitialMovingSpeed}`,
   ];
 
   // eslint-disable-next-line no-console
