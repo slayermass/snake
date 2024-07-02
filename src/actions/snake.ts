@@ -41,8 +41,6 @@ const addBlockToSnake = () => {
     currentTail[1] + getAddition('y', 1, tailDirection),
   ];
 
-  console.log('addBlockToSnake', newTail);
-
   snake.push(newTail);
 };
 
@@ -60,7 +58,7 @@ export const createNewBlockInRandomPlace = () => {
   }
 
   if (freeBlocks.length === 0) {
-    endOfGame();
+    winOfGame();
   } else {
     const randomIndex = getRandomNumber(1, freeBlocks.length) - 1;
 

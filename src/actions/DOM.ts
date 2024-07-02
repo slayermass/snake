@@ -26,9 +26,20 @@ const debugGameField = () => {
 export const markBlock = (position: [number, number], type: BlockType) => {
   const { gameField } = store;
 
-  gameField[position[0]][position[1]] = type;
+  try {
+    gameField[position[0]][position[1]] = type;
 
-  store.gameField = gameField;
+    store.gameField = gameField;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e, position, type);
+    /**
+     * it can sometimes go out of the game field
+     * case:
+     *   - addBlockToSnake() a few times
+     *   - render
+     */
+  }
 };
 
 export const render = () => {
