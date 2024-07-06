@@ -148,9 +148,11 @@ export const moveSnake = () => {
 
   const isAte = ifAteFood(newHead);
 
-  store.snake.unshift(newHead);
+  const tail = store.snake.pop();
 
-  clearGameFieldBlock(store.snake.pop());
+  store.snake = [newHead, ...store.snake];
+
+  clearGameFieldBlock(tail);
 
   if (isAte) {
     createNewBlockInRandomPlace();

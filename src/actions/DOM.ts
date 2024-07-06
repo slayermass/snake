@@ -1,3 +1,4 @@
+import { endOfGame } from './game';
 import { getAddition } from '../utils';
 import { fieldSize, snakeStartLength, snakeStartPosition } from '../config';
 import store from '../utils/store';
@@ -24,12 +25,15 @@ const debugGameField = () => {
 
 // mark a block
 export const markBlock = (position: [number, number], type: BlockType) => {
-  const { gameField } = store;
-
   try {
-    gameField[position[0]][position[1]] = type;
-
-    store.gameField = gameField;
+    // debug
+    if (type === BlockType.food && store.gameField[position[0]][position[1]] !== BlockType.empty) {
+      // eslint-disable-next-line no-console
+      console.error('WRONG MARK BLOCK', position, type, store.gameField[position[0]][position[1]]);
+      endOfGame();
+    } else {
+      store.gameField[position[0]][position[1]] = type;
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(e, position, type);
